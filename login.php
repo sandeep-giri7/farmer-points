@@ -10,16 +10,21 @@ if (isset($_SESSION['user_id'])) {
   exit();
 }
 
+$error = ""; // Initialize the error variable
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
   $email = $_POST['email'];
   $password = $_POST['password'];
 
-  $sql = "SELECT * FROM users WHERE email='$email' AND password='$password'";
-  $result = $conn->query($sql);
+  $sql = "SELECT * FROM users WHERE email=? AND password=?";
+  $stmt = $conn->prepare($sql);
+  $stmt->bind_param("ss", $email, $password);
+  $stmt->execute();
+  $result = $stmt->get_result();
 
   if ($result->num_rows == 1) {
     $row = $result->fetch_assoc();
-    
+
     if ($row['verification_status'] == 0) {
       // User's email is not verified, redirect to verification instructions page
       header("Location: verification_instructions.html");
@@ -27,19 +32,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     $_SESSION['user_id'] = $row['id'];
-    if ($row['isAdmin'] == 1) {
-      echo "Login successful! You are an admin.";
+    if ($row['isAdmin'] === 1) {
       header("Location: admin/admin.php");
-      // Perform actions for admin users
+      exit();
     } else {
-      echo "Login successful! You are a regular user.";
       header("Location: index.php");
-      // Perform actions for regular users
+      exit();
     }
-    
-    exit();
   } else {
-    echo "Invalid email or password.";
+    $error = "Invalid email or password.";
   }
 }
 
@@ -47,74 +48,55 @@ $conn->close();
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
-  <title>User Login</title>
-  <style>
-    body {
-      font-family: Arial, Helvetica, sans-serif;
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Farmers Point - Login</title>
+  <link rel="stylesheet" href="style.css">
+  <script>
+      function togglePassword() {
+      var passwordField = document.getElementById('password');
+      var passwordToggle = document.getElementById('password-toggle');
+      if (passwordField.type === 'password') {
+        passwordField.type = 'text';
+        passwordToggle.textContent = 'Hide Password';
+      } else {
+        passwordField.type = 'password';
+        passwordToggle.textContent = 'Show Password';
+      }
     }
-    h2 {
-      text-align: center;
-    }
-    form {
-      width: 30%;
-      margin: 0 auto;
-    }
-    .form-group {
-      margin-bottom: 8px;
-    }
-    label {
-      display: block;
-    }
-    input[type=email], input[type=password] {
-      width: 100%;
-      padding: 12px 20px;
-      border: 1px solid #ccc;
-      box-sizing: border-box;
-    }
-    input[type=submit] {
-      width: 20%;
-      background-color: #4CAF50;
-      color: white;
-      padding: 12px 20px;
-      margin-top: 8px;
-      border: none;
-      cursor: pointer;
-    }
-    input[type=submit]:hover {
-      background-color: #45a049;
-    }
-    .register-link {
-      font-weight: bold;
-      color: black; /* Replace with your desired color */
-      font-size: 20px; /* Replace with your desired font size */
-    }
-  </style>
+
+  </script>
 </head>
+
 <body>
-  <h2>User Login</h2>
-  <form method="POST" action="<?php echo $_SERVER['PHP_SELF']; ?>">
-  <div>
-    <div class="form-group">
-      <label for="email">Email:</label>
-      <input type="email" id="email" name="email" required>
-    </div>
+  <div class="container">
+    <div class="form-box">
+      <h1 class="registration-title">Account Login</h1>
+      <form method="POST" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>">
+        <div><input type="email" name="email" placeholder="Email" required></div>
+        <div><input type="password" name="password" id="password" placeholder="Password" required></div>
+        
+        <div class="password-toggle-container">
+          <input type="checkbox" id="password-toggle" class="password-toggle" onchange="togglePassword()">
+          <label for="password-toggle" class="password-toggle-label">Show Password</label>
+        </div>
 
-    <div class="form-group">
-      <label for="password">Password:</label>
-      <input type="password" id="password" name="password" required>
-    </div>
-
-    <div>
-      <input type="submit" value="Login">
-    </div>
-    <div>
-      <a>you have to register here</a>
-      <a href="register.php" class="register-link">Register</a>
+        <br>
+        <div><button type="submit">Login</button></div>
+        <div class="register-link">
+          Don't have an account? <a href="Register.php">Register</a>
+        </div>
+      </form>
+      <?php if ($error): ?>
+        <div class="error-message">
+          <?php echo $error; ?>
+        </div>
+      <?php endif; ?>
     </div>
   </div>
-  </form>
 </body>
-</html>
 
+</html>

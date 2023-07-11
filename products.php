@@ -90,21 +90,6 @@ $query = "SELECT p.*, COALESCE(SUM(c.quantity), 0) AS total_quantity
 $result = mysqli_query($conn, $query);
 
 // Check if any products are found
-echo '<style>
-.product-container {
-    display: flex;
-    align-items: center;
-    margin-bottom: 20px; /* Add space between products */
-}
-
-.product-image {
-    width: 150px; /* Set the desired width of the image */
-    height: auto; /* Maintain the aspect ratio */
-    margin-right: 20px; /* Add space between image and details */
-}
-</style>
-';
-
 
 if (mysqli_num_rows($result) > 0) {
     while ($row = mysqli_fetch_assoc($result)) {
@@ -113,25 +98,83 @@ if (mysqli_num_rows($result) > 0) {
         $productPrice = $row['price'];
         $productImage = 'images/' . $row['image']; // Add 'images/' prefix to the image path
         $totalQuantity = $row['quantity'];
+     ?>
 
-        // Display product details
-        echo "<div class='product-container'>";
-        echo "<img class='product-image' src='$productImage' alt='$productName'>";
-        echo "<div>";
-        echo "<p><strong>$productName</strong></p>";
-        echo "<p>Price: $productPrice</p>";
-        echo "<p>Total Quantity: $totalQuantity</p>";
+    <!DOCTYPE html>
+    <html>
 
-        // Quantity field and buy button
-        echo "<form method='POST' action=''>";
-        echo "<input type='hidden' name='productId' value='$productId'>";
-        echo "<input type='number' name='quantity' min='1' value='1'>";
-        echo "<input type='submit' name='buy' value='Buy'>";
-        echo "<input type='submit' name='addtocart' value='Add to cart'>";
-        echo "</form>";
+    <head>
+        <title>Products</title>
+        <style>
+            .product-container {
+                display: flex;
+                margin-bottom: 20px;
+            }
 
-        echo "</div>";
-        echo "</div>";
+            .product-image {
+                width: 200px;
+                height: 200px;
+                object-fit: cover;
+                margin-right: 20px;
+            }
+
+            form {
+                display: flex;
+                align-items: center;
+            }
+
+            input[type=number] {
+                width: 50px;
+                margin-right: 10px;
+            }
+
+            input[type=submit] {
+                padding: 5px 10px;
+                border: none;
+
+            }
+
+            input[type=submit]:hover {
+                cursor: pointer;
+            }
+
+            .error {
+                color: red;
+            }
+        </style>
+    </head>
+
+    <body>
+
+        <div class="product-container">
+            <img class="product-image" src="<?php echo $productImage; ?>" alt="<?php echo $productName; ?>">
+            <div>
+                <p><strong>
+                        <?php echo $productName; ?>
+                    </strong></p>
+                <p>Price:
+                    <?php echo $productPrice; ?>
+                </p>
+                <p>Total Quantity:
+                    <?php echo $totalQuantity; ?>
+                </p>
+
+                <!-- Quantity field and buy button -->
+                <form method="POST" action="">
+                    <input type="hidden" name="productId" value="<?php echo $productId; ?>">
+                    <input type="number" name="quantity" min="1" value="1">
+                    <div class="register-clear-button">
+                        <button type="submit" name="buy" value="buy">BUY</button>
+                        <button type="submit" name="addtocart" value="addtocart">ADD TO CART</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </body>
+
+    </html>
+        
+    <?php
     }
 } else {
     echo "No products found.";
@@ -140,4 +183,3 @@ if (mysqli_num_rows($result) > 0) {
 // Close the database connection
 mysqli_close($conn);
 ?>
-
