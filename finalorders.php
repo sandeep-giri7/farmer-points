@@ -16,26 +16,55 @@ $sql = "SELECT finalorder.id, products.name, products.price, finalorder.quantity
 $result = $conn->query($sql);
 ?>
 
+
 <!DOCTYPE html>
 <html>
 <head>
     <title>Confirmed Orders</title>
-    <a href="logout.php">Logout</a><br>
-    <a href="index.php">Home Page</a>
     <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+        }
+        a {
+            color: darkgoldenrod;
+            text-decoration: underline;
+            margin-right: 10px;
+            font-size: 14px;
+            font-weight:lighter;
+        }
+        h2 {
+            color: green;
+            text-align: center;
+            text-decoration: underline;
+        }
         table {
             width: 100%;
             border-collapse: collapse;
+            background-color: #fff;
+            margin-top: 20px;
         }
         th, td {
             padding: 8px;
             text-align: left;
             border-bottom: 1px solid #ddd;
         }
+        th {
+            background-color: #75c576;
+            color: #fff;
+            font-weight: bold;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr:hover {
+            background-color: #e2e2e2;
+        }
     </style>
 </head>
 <body>
     <h2>Confirmed Orders</h2>
+    <a href="index.php">Home</a>
     <table>
         <tr>
             <th>Order ID</th>
@@ -70,3 +99,4 @@ $result = $conn->query($sql);
     </table>
 </body>
 </html>
+

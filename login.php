@@ -5,16 +5,16 @@ require_once 'config.php';
 session_start();
 
 // Check if a session exists and user_id is set
-if (isset($_SESSION['user_id'])) {
-  header("Location: index.php");
+if (isset($_SESSION['email'])) {
+  header("Location: userdashboard.php");
   exit();
 }
 
 $error = ""; // Initialize the error variable
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+if (isset($_post['login'])) {
   $email = $_POST['email'];
-  $password = $_POST['password'];
+  $password = md5($_POST['password']);
 
   $sql = "SELECT * FROM users WHERE email=? AND password=?";
   $stmt = $conn->prepare($sql);
@@ -36,7 +36,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       header("Location: admin/admin.php");
       exit();
     } else {
-      header("Location: index.php");
+      header("Location: userdashboard.php");
       exit();
     }
   } else {
@@ -85,13 +85,14 @@ $conn->close();
         </div>
 
         <br>
-        <div><button type="submit">Login</button></div>
+        <div><button name="login" type="submit">Login</button></div>
         <div class="register-link">
-          Don't have an account? <a href="Register.php">Register</a>
+          <p>Don't have an account? <a href="Register.php">Register</a></P>
+          <p>Forgot your password? <a href="forgetpassword.php">Reset</a></P>
         </div>
       </form>
       <?php if ($error): ?>
-        <div class="error-message">
+        <div class="error">
           <?php echo $error; ?>
         </div>
       <?php endif; ?>

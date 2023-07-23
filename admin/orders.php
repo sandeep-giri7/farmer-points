@@ -1,66 +1,88 @@
 <?php
-include('../config.php');
+include '../config.php';
 
-// Check if the admin is logged in
-session_start();
-if (isset($_SESSION['user_id'])) {
-    $userId = $_SESSION['user_id'];
+// Fetch all orders from the finalorder table with customer and product details
+$sql = "SELECT finalorder.id, users.name AS customer_name, products.name AS product_name, finalorder.quantity, finalorder.total_price
+        FROM finalorder
+        INNER JOIN users ON finalorder.user_id = users.id
+        INNER JOIN products ON finalorder.product_id = products.id";
+$result = $conn->query($sql);
+?>
 
-    // Check if the user is an admin
-    $isAdminQuery = $conn->query("SELECT isAdmin FROM users WHERE id = $userId");
-    $row = $isAdminQuery->fetch_assoc();
-    $isAdmin = $row['isAdmin'];
-    
-    if ($isAdmin) {
-        // Retrieve all orders (final orders)
-        $ordersQuery = $conn->query("SELECT finalorder.id, users.name AS user_name, products.name AS product_name, finalorder.quantity, finalorder.total_price
-                                    FROM finalorder
-                                    INNER JOIN users ON finalorder.user_id = users.id
-                                    INNER JOIN products ON finalorder.product_id = products.id");
-    
-        // Display the orders (carts)
-        if ($ordersQuery->num_rows > 0) {
-            echo "<table>";
-            echo "<tr><th>Order ID</th><th>User</th><th>Product</th><th>Quantity</th><th>Total Price</th><th>Action</th></tr>";
-            while ($order = $ordersQuery->fetch_assoc()) {
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Orders</title>
+</head>
+<body>
+    <h1>Orders</h1>
+
+    <table>
+        <tr>
+            <th>Order ID</th>
+            <th>Customer Name</th>
+            <th>Product Name</th>
+            <th>Quantity</th>
+            <th>Total Price</th>
+            <th>Action</th>
+        </tr>
+
+        <?php
+        if ($result->num_rows > 0) {
+            // Output data of each row
+            while ($row = $result->fetch_assoc()) {
                 echo "<tr>";
-                echo "<td>{$order['id']}</td>";
-                echo "<td>{$order['user_name']}</td>";
-                echo "<td>{$order['product_name']}</td>";
-                echo "<td>{$order['quantity']}</td>";
-                echo "<td>{$order['total_price']}</td>";
+                echo "<td>" . $row["id"] . "</td>";
+                echo "<td>" . $row["customer_name"] . "</td>";
+                echo "<td>" . $row["product_name"] . "</td>";
+                echo "<td>" . $row["quantity"] . "</td>";
+                echo "<td>" . $row["total_price"] . "</td>";
                 echo "<td>";
-                echo "<form method='post'>";
-                echo "<input type='hidden' name='order_id' value='{$order['id']}' />";
+                echo "<form method='post' action=''>";
+                echo "<input type='hidden' name='order_id' value='" . $row["id"] . "'>";
+                echo "<input type='submit' name='confirm' value='Confirm'>";
+                echo "<input type='submit' name='reject' value='Reject'>";
                 echo "</form>";
                 echo "</td>";
                 echo "</tr>";
             }
-            echo "</table>";
         } else {
-            echo "No orders found.";
+            echo "<tr><td colspan='6'>No orders found</td></tr>";
+        }
+        ?>
+    </table>
+
+    <?php
+    // Process the confirmation or rejection of an order
+    if (isset($_POST['confirm']) || isset($_POST['reject'])) {
+        $order_id = $_POST['order_id'];
+
+        if (isset($_POST['confirm'])) {
+            // Remove order from finalorder table
+            $remove_sql = "DELETE FROM finalorder WHERE id = $order_id";
+            $conn->query($remove_sql);
+
+            // Send confirmation message to the user
+            $message = "Your order with ID $order_id has been confirmed.";
+   
+            // send_message_to_user($message);
+        } elseif (isset($_POST['reject'])) {
+            // Remove order from finalorder table
+            $remove_sql = "DELETE FROM finalorder WHERE id = $order_id";
+            $conn->query($remove_sql);
+
+            // Send rejection message to the user
+            $message = "Your order with ID $order_id has been rejected.";
+           
+            // send_message_to_user($message);
         }
 
-        // Handle the deletion when the form is submitted
-        if (isset($_POST['delete'])) {
-            $orderId = $_POST['order_id'];
-            $deleteQuery = $conn->query("DELETE FROM cart WHERE id = $orderId");
-
-            if ($deleteQuery) {
-                echo "Order deleted successfully.";
-                // Refresh the page to reflect the updated order list
-                echo "<meta http-equiv='refresh' content='0'>";
-            } else {
-                // echo "Error deleting order: " . $conn->error;
-            }
-        }
-    } else {
-        echo "You are not authorized to access this page.";
+        // Redirect to the same page to avoid form resubmission
+        header("Location: ".$_SERVER['PHP_SELF']);
     }
-} else {
-    echo "Please log in as an admin.";
-}
 
-// Close the database connection
-$conn->close();
-?>
+    // Close the database connection
+    $conn->close();
+    ?>
+</body>
+</html>

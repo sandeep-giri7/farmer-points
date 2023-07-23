@@ -82,102 +82,38 @@ if (isset($_POST['buy'])) {
 }
 
 // Fetch all products from the database
-$query = "SELECT p.*, COALESCE(SUM(c.quantity), 0) AS total_quantity 
-          FROM products p
-          LEFT JOIN finalorder f ON p.id = f.product_id
-          LEFT JOIN cart c ON p.id = c.product_id
-          GROUP BY p.id";
+$query = "SELECT * FROM products";
 $result = mysqli_query($conn, $query);
 
 // Check if any products are found
-
 if (mysqli_num_rows($result) > 0) {
     while ($row = mysqli_fetch_assoc($result)) {
         $productId = $row['id'];
         $productName = $row['name'];
         $productPrice = $row['price'];
         $productImage = 'images/' . $row['image']; // Add 'images/' prefix to the image path
-        $totalQuantity = $row['quantity'];
-     ?>
+        $productQuantity = $row['quantity'];
+        ?>
 
-    <!DOCTYPE html>
-    <html>
-
-    <head>
-        <title>Products</title>
-        <style>
-            .product-container {
-                display: flex;
-                margin-bottom: 20px;
-            }
-
-            .product-image {
-                width: 200px;
-                height: 200px;
-                object-fit: cover;
-                margin-right: 20px;
-            }
-
-            form {
-                display: flex;
-                align-items: center;
-            }
-
-            input[type=number] {
-                width: 50px;
-                margin-right: 10px;
-            }
-
-            input[type=submit] {
-                padding: 5px 10px;
-                border: none;
-
-            }
-
-            input[type=submit]:hover {
-                cursor: pointer;
-            }
-
-            .error {
-                color: red;
-            }
-        </style>
-    </head>
-
-    <body>
-
+        <!-- Display the product details -->
         <div class="product-container">
             <img class="product-image" src="<?php echo $productImage; ?>" alt="<?php echo $productName; ?>">
             <div>
-                <p><strong>
-                        <?php echo $productName; ?>
-                    </strong></p>
-                <p>Price:
-                    <?php echo $productPrice; ?>
-                </p>
-                <p>Total Quantity:
-                    <?php echo $totalQuantity; ?>
-                </p>
+                <p><strong><?php echo $productName; ?></strong></p>
+                <p>Price: <?php echo $productPrice; ?></p>
+                <p>Quantity: <?php echo $productQuantity; ?></p>
 
                 <!-- Quantity field and buy button -->
                 <form method="POST" action="">
                     <input type="hidden" name="productId" value="<?php echo $productId; ?>">
                     <input type="number" name="quantity" min="1" value="1">
-                    <div class="register-clear-button">
-                        <button type="submit" name="buy" value="buy">BUY</button>
-                        <button type="submit" name="addtocart" value="addtocart">ADD TO CART</button>
-                    </div>
+                    <button type="submit" name="buy" value="buy">BUY</button>
+                    <button type="submit" name="addtocart" value="addtocart">ADD TO CART</button>
                 </form>
             </div>
         </div>
-    </body>
-
-    </html>
-        
     <?php
     }
-} else {
-    echo "No products found.";
 }
 
 // Close the database connection

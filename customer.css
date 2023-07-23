@@ -1,0 +1,145 @@
+
+* {
+  --base-bgcolor: #c31f26;
+  /* width: 100%; */
+}
+
+body {
+  padding: 0;
+  margin: 0;
+  background-color: #f0f2f5;
+}
+
+h1 {
+  margin: 0;
+  padding: 0;
+}
+
+
+.look-for {
+  text-align: center;
+}
+
+.cat-box {
+  display: flex;
+  justify-content: center;
+  /* grid-template-columns: 200px 200px 200px; */
+  /* padding-left: 25%; */
+}
+
+.cat-box-item {
+  background-color: white;
+  width: 200px;
+  color: black;
+  margin: 10px;
+  padding: 10px;
+  border: 2px solid inherit;
+  border-radius: 5px;
+  box-shadow: 0 3px 4px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  justify-content: center;
+}
+
+.cat-box-item img {
+  width: 50px;
+}
+
+.new-product, .products {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  padding: 0 250px;
+}
+
+.product {
+  margin: 10px;
+}
+
+.product-img img {
+  width: 300px;
+  border-radius: 5px;
+}
+
+.product-title {
+  font-weight: 600;
+  color: #c31f26;
+  text-align: center;
+}
+
+.options-btn input[type="submit"] {
+  outline: 0;
+  border: 0;
+  border-radius: 5px;
+  padding: 10px;
+  background-color: #c31f26;
+  color: white;
+  text-align: center;
+  align-items: center;
+}
+
+.about-us p {
+  background-color: white;
+  padding: 8px 25px;
+}
+
+.active {
+  color: #fff;
+  background-color: #c31f26;
+}
+
+
+.product {
+display: flex;
+flex-direction: column;
+align-items: center;
+margin-bottom: 20px;
+}
+
+.product-img img {
+width: 200px; 
+height: 200px; 
+}
+
+.product-title {
+font-weight: bold;
+margin-top: 10px;
+}
+
+.product-price {
+font-style: italic;
+color: #555;
+margin-top: 5px;
+}
+
+.product-quantity {
+color: #777;
+margin-top: 5px;
+}
+
+.options-btn {
+margin-top: 10px;
+}
+
+.options-btn button {
+padding: 5px 10px;
+margin-right: 5px;
+background-color: #333;
+color: #fff;
+border: none;
+cursor: pointer;
+}
+
+.options-btn button:hover {
+background-color: #555;
+}
+.item{
+    text-align: center;
+}
+.look-for .meat{
+    color: #c3050f
+}
+.look-for .veg{
+    color: #076905
+}
+.look-for .fruit{
+    color: #c87005
+}

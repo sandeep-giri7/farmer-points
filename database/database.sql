@@ -17,7 +17,8 @@ CREATE TABLE `users` (
   `password` varchar(50) NOT NULL,
   `isAdmin` tinyint(1) DEFAULT 0,
   `verification_code` varchar(100) NOT NULL,
-  `verification_status` int(2) NOT NULL DEFAULT 0
+  `verification_status` int(2) NOT NULL DEFAULT 0,
+  `sOTP` varchar(50) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 

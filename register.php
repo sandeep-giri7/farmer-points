@@ -1,14 +1,14 @@
 <?php
 include 'config.php';
 
-// Start session
-session_start();
+// // Start session
+// session_start();
 
-// Check if user is already logged in
-if (isset($_SESSION['user_id'])) {
-  header('Location: login.php');
-  exit;
-}
+// // Check if user is already logged in
+// if (isset($_SESSION['user_id'])) {
+//   header('Location: login.php');
+//   exit;
+// }
 
 $err = array(); // Initialize error array
 
@@ -17,7 +17,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   $email = $_POST['email'];
   $phone = $_POST['phone'];
   $address = $_POST['address'];
-  $password = $_POST['password'];
+  $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+
 
   // Validation
   if (empty($name)) {
@@ -49,7 +50,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   $confirm_password = $_POST['confirm_password'];
   if (empty($confirm_password)) {
     $err['confirm_password'] = 'Please enter confirm password';
-  } elseif ($confirm_password !== $password) {
+  } elseif (!password_verify($_POST['confirm_password'], $password)) {
     $err['confirm_password'] = 'Passwords do not match';
   }
 
@@ -82,7 +83,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       header("Location: verification_instructions.html");
       exit();
     } else {
-      echo "Error: " . $conn->error;
+      echo "Error: " ;
     }
   }
 }

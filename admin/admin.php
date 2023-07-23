@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -10,7 +11,7 @@
 
 <body>
   <header>
-    <h1>Header</h1>
+    <h1>Admin Dashboard</h1>
     <nav>
       <!-- Include navigation links here -->
       
@@ -24,19 +25,13 @@
         <li><a href="addproducts.php">AddProduct</a></li>
         <li><a href="orders.php">CheckOrder</a></li>
         <li><a href="inventory.php">Inventory</a></li>
+       </ul>
+       <div class="lgot">
         <a href="../logout.php">Logout</a>
-      </ul>
+      </div>
     </aside>
 
-    <section>
-      <h2>Main Content</h2>
-      <h3>This is Admin Page</h3>
-  
-    </section>
   </main>
 
-  <footer>
-    <p>Footer</p>
-  </footer>
 </body>
 </html>

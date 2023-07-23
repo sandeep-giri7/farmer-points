@@ -18,10 +18,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         $sql = "UPDATE cart SET quantity = $new_quantity, total_price = $new_price * $new_quantity WHERE id = $order_id";
         if ($conn->query($sql) === TRUE) {
-            header("Location: cart.php");
-            exit;
+            // Quantity and price updated successfully
         } else {
-            echo "Error updating quantity: " . $conn->error;
+            echo "Error updating quantity: " ;
         }
     }
     // Handle order deletion
@@ -30,39 +29,46 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         $sql = "DELETE FROM cart WHERE id = $order_id";
         if ($conn->query($sql) === TRUE) {
-            header("Location: cart.php");
-            exit;
+            // Order deleted successfully
         } else {
-            echo "Error deleting order: " . $conn->error;
+            echo "Error deleting order: " ;
         }
     }
     // Handle placing the order
     elseif (isset($_POST['place_order'])) {
-        $order_id = $_POST['order_id'];
-
         // Get the order details from the cart table
-        $sql = "SELECT * FROM cart WHERE id = $order_id";
+        $sql = "SELECT * FROM cart WHERE user_id = $user_id";
         $result = $conn->query($sql);
-        $row = $result->fetch_assoc();
 
-        $product_id = $row['product_id'];
-        $quantity = $row['quantity'];
-        $total_price = $row['total_price'];
+        // Iterate over the cart items
+        while ($row = $result->fetch_assoc()) {
+            $order_id = $row['id'];
+            $product_id = $row['product_id'];
+            $quantity = $row['quantity'];
+            $total_price = $row['total_price'];
 
-        // Insert the order into the finalorder table
-        $sql = "INSERT INTO finalorder (user_id, product_id, quantity, total_price)
-                VALUES ($user_id, $product_id, $quantity, $total_price)";
-        if ($conn->query($sql) === TRUE) {
-            // Delete the order from the cart table
-            $sql = "DELETE FROM cart WHERE id = $order_id";
+            // Insert the order into the finalorder table
+            $sql = "INSERT INTO finalorder (user_id, product_id, quantity, total_price)
+                    VALUES ($user_id, $product_id, $quantity, $total_price)";
             if ($conn->query($sql) === TRUE) {
-                header("Location: cart.php");
-                exit;
+                // Delete the order from the cart table
+                $sql = "DELETE FROM cart WHERE id = $order_id";
+                if ($conn->query($sql) === TRUE) {
+                    // Order placed and deleted from cart successfully
+
+                    // Update the product quantity in the products table
+                    $sql = "UPDATE products SET quantity = quantity - $quantity WHERE id = $product_id";
+                    if ($conn->query($sql) === TRUE) {
+                        // Product quantity updated successfully
+                    } else {
+                        echo "Error updating product quantity: " ;
+                    }
+                } else {
+                    echo "Error deleting order from cart: " ;
+                }
             } else {
-                echo "Error deleting order from cart: " . $conn->error;
+                echo "Error placing order: " ;
             }
-        } else {
-            echo "Error placing order: " . $conn->error;
         }
     }
 }
@@ -74,26 +80,92 @@ $sql = "SELECT cart.id, products.name, products.price, cart.quantity, cart.total
 $result = $conn->query($sql);
 ?>
 
+
 <!DOCTYPE html>
 <html>
 <head>
     <title>Customer Orders</title>
-    <a href="logout.php">Logout</a><br>
-    <a href="index.php">Home Page</a>
     <style>
+        body {
+            background-color: #f2f2f2;
+        }
+        
+        a {
+            color: darkgoldenrod;
+            text-decoration: underline;
+            font-size: 16px;
+
+        }
+        
         table {
             width: 100%;
             border-collapse: collapse;
+            background-color: #ffffff;
+            margin-top: 20px;
         }
+        
         th, td {
             padding: 8px;
             text-align: left;
             border-bottom: 1px solid #ddd;
         }
+        
+        th {
+            background-color:#75c576;
+            color: #ffffff;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        
+        form {
+            display: inline-block;
+        }
+        
+        input[type="number"] {
+            width: 60px;
+        }
+        
+        input[type="submit"] {
+            background-color:green;
+            color: #ffffff;
+            border: none;
+            padding: 6px 12px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            cursor: pointer;
+            font-size: 14px;
+            border-radius: 4px;
+        }
+        
+        input[type="submit"]:hover {
+            background-color: #004d00;
+        }
+        
+        .total-row {
+            background-color: #ffffff;
+            font-weight: bold;
+        }
+        
+        .no-orders {
+            text-align: center;
+            font-style: italic;
+            color: #666666;
+        }
+        
+        h2 {
+            color: green;   
+            text-align: center;
+            font-weight:bold;
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
     <h2>Customer Orders</h2>
+    <a href="index.php">Home</a>
     <table>
         <tr>
             <th>Order ID</th>
@@ -104,7 +176,6 @@ $result = $conn->query($sql);
             <th>Edit Quantity</th>
             <th>Delete Order</th>
         </tr>
-        <!-- add total button -->
       
         <?php
         if ($result->num_rows > 0) {
@@ -139,10 +210,11 @@ $result = $conn->query($sql);
                 <?php
             }
         } else {
-            echo "<tr><td colspan='7'>No orders found.</td></tr>";
+            echo "<tr><td colspan='7' class='no-orders'>No orders found.</td></tr>";
         }
         ?>
-          <tr>
+        
+        <tr class="total-row">
             <td colspan="4">Total</td>
             <td>
                 <?php
@@ -152,12 +224,13 @@ $result = $conn->query($sql);
                 echo $row["total"];
                 ?>
             </td>
-            <!-- add button buy -->
             <td colspan="2">
-            <form method="post" action="">
-                            <input type="hidden" name="order_id" value="<?php echo $order_id; ?>">
+                <form method="post" action="">
+                    <input type="hidden" name="order_id" value="<?php echo $order_id; ?>">
                     <input type="submit" name="place_order" value="Place Order">
                 </form>
+            </td>
+        </tr>
     </table>
 </body>
 </html>

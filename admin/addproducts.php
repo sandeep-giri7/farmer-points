@@ -71,12 +71,18 @@ if (isset($_SESSION['user_id'])) {
         }
 
         h2 {
-          color: #333;
           text-align: center;
-        } 
+          background-color: #75c576;
+      color: #fff;
+      text-align: center;
+      border-radius: 10px;
+      padding: 5px;
+      margin-top: 4px;
+        }
+    
 
         form {
-          margin-top: 20px;
+          margin-top: 10px;
           padding: 20px;
           background-color: #fff;
           border-radius: 4px;
@@ -125,9 +131,44 @@ if (isset($_SESSION['user_id'])) {
           color: red;
           margin-top: 5px;
         }
+
+        a{
+         
+          /* background-color: #4CAF50; */
+          color: darkgreen;
+          border-radius: 4px;
+          cursor: pointer;
+          margin-top: 16px;
+          text-decoration: underline;
+          font-weight: bold;
+
+
+        }
+        a:hover{
+          color: darkolivegreen;
+        }
+
+        .hom{
+          margin-top: 16px;
+          font-size: 14px;
+          font-weight:bold;
+          color: darkolivegreen;
+        }
         </style>
       </head>
       <body>
+      <aside>
+      <h2>Sidebar</h2>
+      <ul>
+        <li><a href="addproducts.php">AddProduct</a></li>
+        <li><a href="orders.php">CheckOrder</a></li>
+        <li><a href="inventory.php">Inventory</a></li>
+       </ul>
+       <div class="lgot">
+        <a href="../logout.php">Logout</a>
+      </div>
+    </aside>
+     
         <div class="form-box-container">
         
 
@@ -162,13 +203,14 @@ if (isset($_SESSION['user_id'])) {
                 <option value="Fruit">Fruit</option>
                 <option value="Vegetable">Vegetable</option>
                 <option value="Meat">Meat</option>
-                <option value="Dry Fruits">Dry Fruits</option>
-                <option value="Seeds">Seeds</option>
               </select>
             </div>
 
             <div>
               <input type="submit" value="Add Product">
+            </div>
+            <div class="hom">
+             Go to Admin Dashboard <a input type="submit" value="Home" href="admin.php"> Home</a>
             </div>
           </form>
         </div>
