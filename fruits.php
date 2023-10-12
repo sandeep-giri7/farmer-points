@@ -2,7 +2,11 @@
 // Include the configuration file
 include('config.php');
 session_start();
-
+if (!isset($_SESSION['user_id'])) {
+  // Redirect to the login page
+  header("Location: login.php");
+  exit; // Stop further execution of the code
+}
 
 // Check if the buy button is clicked for a specific product
 if (isset($_POST['buy'])) {
@@ -67,7 +71,10 @@ if (isset($_POST['buy'])) {
 
       echo "<p>Product added to cart successfully! Total price: $totalPrice</p>";
     } else {
-      echo "<p>Requested quantity exceeds available stock.</p>";
+      // echo "<p>Requested quantity exceeds available stock.</p>";
+      '<script>
+            alert("Requested quantity exceeds available stock.")
+            </script>';
     }
   } else {
     echo "<p>Product not found.</p>";
@@ -131,7 +138,7 @@ if (mysqli_num_rows($result) > 0) {
         $productId = $row['id'];
         $productName = $row['name'];
         $productPrice = $row['price'];
-        $productImage = 'images/' . $row['image'];
+        $productImage = 'admin/uploads/' . $row['image'];
         $productQuantity = $row['quantity'];
         ?>
         <div class="product">
@@ -144,7 +151,7 @@ if (mysqli_num_rows($result) > 0) {
           <div class="product-price">Price:
             <?php echo $productPrice; ?>
           </div>
-          <div class="product-quantity">Total Quantity:
+          <div class="product-quantity">Available Quantity:
             <?php echo $productQuantity; ?>
           </div>
 

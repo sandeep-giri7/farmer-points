@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Farmers Point - Contact</title>
-    <link rel="stylesheet" href="styles.css">
     <style>
         /* Add your custom CSS here */
         body {
@@ -13,46 +13,31 @@
             margin: 0;
             padding: 0;
         }
-
-        nav {
-            background-color: black;
-            color: white;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 5%;
-        }
-
-    nav ul{
+        .row{
       display: flex;
-      list-style: none;
+      justify-content: space-between;
+      align-items: center;
+      margin: 2% 5%;
     }
-    nav ul li{
-      padding: 10px 15px;
-      border-radius: 10px;
-      transition: 0.2s ease-in;
-      margin-left: 20px;
+    .row .column1 {
+      padding-right: 50px;
     }
-    nav ul li a{
-      color:white;
-      font-size: 22px;
-      font-weight: bold;
-      text-decoration: none;
+ 
+    .column1 p {
+      font-size: 30px;
+      margin-bottom: 20px;
+      margin-top: 30px;
+      color: black;
     }
-    nav ul li:hover{
-      background-color: green; 
+    h2 {
+      color: black;
+      font-size: 40px;
+      margin-bottom: 20px;
+      margin-top: 30px;
+      text-align: center;
+      text-decoration: underline;
     }
-
-        h2 {
-            color: black;
-            font-size: 40px;
-            margin-bottom: 20px;
-            margin-top: 30px;
-            text-align: center;
-            text-decoration: underline;
-        }
-
-        .contact-section {
+    .contact-section {
             margin-top: 50px;
             padding: 20px;
             border: 2px solid #333;
@@ -105,7 +90,7 @@
         button:hover {
             background-color: green;
         }
-/* place footer at the bottom of the page */
+        /* place footer at the bottom of the page */
         .footer {
             background-color: black;
             color: white;
@@ -116,28 +101,17 @@
         }
     </style>
 </head>
-<body>
 
-    <nav>
-        <div class="logo"></div>
-        <div class="navLinks">
-            <ul>
-                <li><a href="index.php">Home</a></li>
-                <li><a href="about.php">About</a></li>
-                <li><a href="#">Contact</a></li>
-            </ul>
-        </div>
-    </nav>
+<body>
 
     <!-- Main content -->
     <main>
 
         <section class="contact-section">
             <h2>Contact Farmers Point</h2>
-            <p>If you have any questions, inquiries, or feedback, please don't hesitate to contact us. We'd love to hear from you!</p>
-            <p>Phone: 9860370086</p>
-            <p>Email:contact@farmerspoint.com</P>
-            <!-- <form action="submit_form.php" method="post">
+            <p>If you have any questions, inquiries, or feedback, please don't hesitate to contact us. We'd love to hear
+                from you!</p>
+            <form action="submit_form.php" method="post">
                 <div class="form-group">
                     <label for="name">Name:</label>
                     <input type="text" id="name" name="name" required>
@@ -155,9 +129,8 @@
                     <textarea id="message" name="message" rows="5" required></textarea>
                 </div>
                 <button type="submit">Submit</button>
-            </form> -->
+            </form>
         </section>
-       
     </main>
 
     <footer class="footer">
@@ -165,4 +138,5 @@
     </footer>
 
 </body>
+
 </html>

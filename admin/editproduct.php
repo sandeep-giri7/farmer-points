@@ -2,6 +2,13 @@
 // Include config file
 include '../config.php';
 
+session_start();
+if (!isset($_SESSION['user_id'])) {
+    // Redirect to the login page
+    header("Location: /login.php");
+    exit; // Stop further execution of the code
+  }
+  
 // Define variables and initialize with empty values
 $name = $quantity = $price = $image = $category = "";
 $name_err = $quantity_err = $price_err = $image_err = $category_err = "";

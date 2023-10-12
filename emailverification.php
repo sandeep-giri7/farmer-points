@@ -5,9 +5,9 @@ require_once 'config.php';
 session_start();
 
 // Check if the user is already logged in
-if (isset($_SESSION['user_id'])) {
+if (isset($_SESSION['email'])) {
   // Redirect to index.php or any other desired page
-  header("Location: index.php");
+  header("Location: landingpage/index.php");
   exit();
 }
 
@@ -23,7 +23,7 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET['code'])) {
     header("Location: login.php");
     exit();
   } else {
-    echo "Error: " . $conn->error;
+    echo "Error: ";
   }
 }
 

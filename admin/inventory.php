@@ -1,4 +1,14 @@
 <?php
+// session 
+
+// Check if the admin is logged in
+session_start();
+if (!isset($_SESSION['user_id'])) {
+    // Redirect to the login page
+    header("Location: ../login.php");
+    exit; // Stop further execution of the code
+}
+
 // Include config file
 include '../config.php';
 
@@ -31,12 +41,20 @@ $result = $conn->query($sql);
 
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Inventory</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
+    <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#example').DataTable();
+        });
+    </script>
     <style>
         table {
-            width: 100%;
+            width: 80%;
             border-collapse: collapse;
         }
 
@@ -45,60 +63,54 @@ $result = $conn->query($sql);
         }
     </style>
 </head>
+
 <body>
 
-<aside>
-      <h2>Sidebar</h2>
-      <ul>
-        <li><a href="addproducts.php">AddProduct</a></li>
-        <li><a href="orders.php">CheckOrder</a></li>
-        <li><a href="inventory.php">Inventory</a></li>
-       </ul>
-       <div class="lgot">
-        <a href="../logout.php">Logout</a>
-      </div>
-    </aside>
-    
     <h1>Inventory</h1>
 
-    <table>
-        <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Quantity</th>
-            <th>Price</th>
-            <th>Image</th>
-            <th>Category</th>
-            <th>Actions</th>
-        </tr>
-        <?php
-        if ($result->num_rows > 0) {
-            while ($row = $result->fetch_assoc()) {
-                ?>
-                <tr>
-                    <td><?php echo $row["id"]; ?></td>
-                    <td><?php echo $row["name"]; ?></td>
-                    <td><?php echo $row["quantity"]; ?></td>
-                    <td><?php echo $row["price"]; ?></td>
-                    <td><?php echo $row["image"]; ?></td>
-                    <td><?php echo $row["category"]; ?></td>
-                    <td>
-                        <a href="editproduct.php?id=<?php echo $row["id"]; ?>">Edit</a>
-                        <form method="post" style="display:inline-block;">
-                            <input type="hidden" name="delete_id" value="<?php echo $row['id']; ?>">
-                            <button type="submit" onclick="return confirm('Are you sure you want to delete this product?')">Delete</button>
-                        </form>
-                    </td>
-                </tr>
-                <?php
+    <table id="example" class="display">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Image</th>
+                <th>Category</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php
+            if ($result->num_rows > 0) {
+                while ($row = $result->fetch_assoc()) {
+                    ?>
+                    <tr>
+                        <td><?php echo $row["id"]; ?></td>
+                        <td><?php echo $row["name"]; ?></td>
+                        <td><?php echo $row["quantity"]; ?></td>
+                        <td><?php echo $row["price"]; ?></td>
+                        <td><?php echo $row["image"]; ?></td>
+                        <td><?php echo $row["category"]; ?></td>
+                        <td>
+                            <a href="editproduct.php?id=<?php echo $row["id"]; ?>">Edit</a>
+                            <form method="post" style="display:inline-block;">
+                                <input type="hidden" name="delete_id" value="<?php echo $row['id']; ?>">
+                                <button type="submit" onclick="return confirm('Are you sure you want to delete this product?')">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    <?php
+                }
+            } else {
+                echo "<tr><td colspan='7'>No products found.</td></tr>";
             }
-        } else {
-            echo "<tr><td colspan='7'>No products found.</td></tr>";
-        }
-        ?>
+            ?>
+        </tbody>
     </table>
 
 </body>
+
 </html>
 
 <?php

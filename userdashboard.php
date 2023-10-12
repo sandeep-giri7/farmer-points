@@ -3,12 +3,12 @@
 include('config.php');
 session_start();
 
-// // Check if the user is not logged in
-// if (!isset($_SESSION['user_id'])) {
-//   // Redirect to the login page
-//   header("Location: login.php");
-//   exit; // Stop further execution of the code
-// }
+// Check if the user is not logged in
+if (!isset($_SESSION['user_id'])) {
+  // Redirect to the login page
+  header("Location: login.php");
+  exit; // Stop further execution of the code
+}
 
 // Check if the buy button is clicked for a specific product
 if (isset($_POST['buy'])) {
@@ -62,6 +62,7 @@ if (isset($_POST['buy'])) {
     $productName = $row['name'];
     $productPrice = $row['price'];
     $productQuantity = $row['quantity'];
+
     $userId = $_SESSION['user_id'];
     $totalPrice = $productPrice * $quantity;
 
@@ -73,7 +74,10 @@ if (isset($_POST['buy'])) {
 
       echo "<p>Product added to cart successfully! Total price: $totalPrice</p>";
     } else {
-      echo "<p>Requested quantity exceeds available stock.</p>";
+      // echo "<p>Requested quantity exceeds available stock.</p>";
+      '<script>
+            alert("Requested quantity exceeds available stock.")
+            </script>';
     }
   } else {
     echo "<p>Product not found.</p>";
@@ -142,7 +146,7 @@ if (mysqli_num_rows($result) > 0) {
           $productId = $row['id'];
           $productName = $row['name'];
           $productPrice = $row['price'];
-          $productImage = 'images/' . $row['image'];
+          $productImage = 'admin/uploads/' . $row['image'];
           $productQuantity = $row['quantity'];
           ?>
           <div class="product">
@@ -155,7 +159,7 @@ if (mysqli_num_rows($result) > 0) {
             <div class="product-price">Price:
               <?php echo $productPrice; ?>
             </div>
-            <div class="product-quantity">Total Quantity:
+            <div class="product-quantity">Available Quantity:
               <?php echo $productQuantity; ?>
             </div>
 
@@ -173,6 +177,7 @@ if (mysqli_num_rows($result) > 0) {
         ?>
       </div>
     </div>
+    
     
   </body>
 

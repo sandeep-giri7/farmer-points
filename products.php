@@ -74,7 +74,10 @@ if (isset($_POST['buy'])) {
 
             echo "<p>Product added to cart successfully! Total price: $totalPrice</p>";
         } else {
-            echo "<p>Requested quantity exceeds available stock.</p>";
+            // echo "<p>Requested quantity exceeds available stock.</p>";
+            '<script>
+            alert("Requested quantity exceeds available stock.")
+            </script>';
         }
     } else {
         echo "<p>Product not found.</p>";
@@ -91,7 +94,7 @@ if (mysqli_num_rows($result) > 0) {
         $productId = $row['id'];
         $productName = $row['name'];
         $productPrice = $row['price'];
-        $productImage = 'images/' . $row['image']; // Add 'images/' prefix to the image path
+        $productImage = 'admin/uploads/' . $row['image']; // Add 'images/' prefix to the image path
         $productQuantity = $row['quantity'];
         ?>
 

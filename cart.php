@@ -165,7 +165,7 @@ $result = $conn->query($sql);
 </head>
 <body>
     <h2>Customer Orders</h2>
-    <a href="index.php">Home</a>
+    <a href="userdashboard.php">Home</a>
     <table>
         <tr>
             <th>Order ID</th>

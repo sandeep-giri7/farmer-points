@@ -12,32 +12,39 @@ if (isset($_SESSION['email'])) {
 
 $error = ""; // Initialize the error variable
 
-if (isset($_post['login'])) {
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
   $email = $_POST['email'];
-  $password = md5($_POST['password']);
+  $password = $_POST['password'];
 
-  $sql = "SELECT * FROM users WHERE email=? AND password=?";
+  $sql = "SELECT * FROM users WHERE email=?";
   $stmt = $conn->prepare($sql);
-  $stmt->bind_param("ss", $email, $password);
+  $stmt->bind_param("s", $email);
   $stmt->execute();
   $result = $stmt->get_result();
 
   if ($result->num_rows == 1) {
     $row = $result->fetch_assoc();
+    $hashed_password_from_db = $row['password'];
 
-    if ($row['verification_status'] == 0) {
-      // User's email is not verified, redirect to verification instructions page
-      header("Location: verification_instructions.html");
-      exit();
-    }
+    // Verify the hashed password
+    if (password_verify($password, $hashed_password_from_db)) {
+      if ($row['verification_status'] == 0) {
+        // User's email is not verified, redirect to verification instructions page
+        header("Location: verification_instructions.html");
+        exit();
+      }
 
-    $_SESSION['user_id'] = $row['id'];
-    if ($row['isAdmin'] === 1) {
-      header("Location: admin/admin.php");
-      exit();
+      $_SESSION['user_id'] = $row['id'];
+      if ($row['isAdmin'] == '1') { // Note: 'isAdmin' is a string, not an integer
+        header("Location: admin/admin.php");
+        exit();
+      } else {
+        header("Location: userdashboard.php");
+        exit();
+      }
     } else {
-      header("Location: userdashboard.php");
-      exit();
+      // Password is incorrect
+      $error = "Invalid email or password.";
     }
   } else {
     $error = "Invalid email or password.";
@@ -56,7 +63,7 @@ $conn->close();
   <title>Farmers Point - Login</title>
   <link rel="stylesheet" href="style.css">
   <script>
-      function togglePassword() {
+    function togglePassword() {
       var passwordField = document.getElementById('password');
       var passwordToggle = document.getElementById('password-toggle');
       if (passwordField.type === 'password') {
@@ -67,7 +74,6 @@ $conn->close();
         passwordToggle.textContent = 'Show Password';
       }
     }
-
   </script>
 </head>
 
@@ -78,7 +84,7 @@ $conn->close();
       <form method="POST" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>">
         <div><input type="email" name="email" placeholder="Email" required></div>
         <div><input type="password" name="password" id="password" placeholder="Password" required></div>
-        
+
         <div class="password-toggle-container">
           <input type="checkbox" id="password-toggle" class="password-toggle" onchange="togglePassword()">
           <label for="password-toggle" class="password-toggle-label">Show Password</label>
@@ -87,7 +93,7 @@ $conn->close();
         <br>
         <div><button name="login" type="submit">Login</button></div>
         <div class="register-link">
-          <p>Don't have an account? <a href="Register.php">Register</a></P>
+          <p>Don't have an account? <a href="register.php">Register</a></P>
           <p>Forgot your password? <a href="forgetpassword.php">Reset</a></P>
         </div>
       </form>
